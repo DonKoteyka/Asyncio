@@ -9,50 +9,15 @@ CHUNK_SIZE = 10
 
 
 async def fill_hero(hero_list: list):
-    # homeworld,  films,  species,  starships,  vehicles
-    #     for person in hero_list:
-    #         #  fix_preson = {
-    #         #      'homeworld': person.pop['homeworld'],
-    #         #      'films': person.pop['films'],
-    #         #      'species':  person.pop['species'],
-    #         #      'starships': person.pop['starships'],
-    #         #      'vehicles': person.pop['vehicles']
-    #
-    #         #  }
-    #         # pattern = list('homeworld',  'films',  'species',  'starships',  'vehicles')
-    #         # fix_preson = dict()
-    #         # for i in pattern:
-    #
-    #
-    #         hero_list.append(SwapiPeople(**person))
-    #
-    #     async with Session() as session:
-    #         session.add_all(hero_list)
-    #         await session.commit()
-
-    # created  edited url
-    # people_list = [SwapiPeople(validate(CreateItem, person)) ]
     people_list = list()
     for person in hero_list:
         fix = dict()
-        person.pop('created')
-        person.pop('edited')
-        person.pop('url')
-        homeworld = person.pop('homeworld')
-        films = person.pop('films')
-        species = person.pop('species')
-        starships = person.pop('starships')
-        vehicles = person.pop('vehicles')
-        fix = {
-
-                         'homeworld': await handler_links(homeworld),
-                         'films': await handler_links(films),
-                         'species': await handler_links(species),
-                         'starships': await handler_links(starships),
-                         'vehicles': await handler_links(vehicles)
-
-        }
-
+        rm_list = ['created', 'edited', 'url']
+        [person.pop(i) for i in rm_list]
+        links_list = ['homeworld', 'films', 'species', 'starships', 'vehicles']
+        coro = [handler_links(person.pop(i)) for i in links_list]
+        result =  await asyncio.gather(*coro)
+        fix = dict(zip(links_list, result))
         people_list.append(SwapiPeople(**person, **fix))
 
     async with Session() as session:
@@ -96,7 +61,7 @@ async def get_request(hero_id: int):
 async def main():
     await init_db()
 
-    for hero_list in chunked(range(1, 10), CHUNK_SIZE):
+    for hero_list in chunked(range(1, 88), CHUNK_SIZE):
         pre_request = list()
         for i in hero_list:
             coro = get_request(i)
@@ -118,4 +83,4 @@ async def main_2():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    # asyncio.run(main_2())
+    asyncio.run(main_2())

@@ -33,16 +33,16 @@ class SwapiPeople(Base):
     birth_year: Mapped[str] = mapped_column(String(50), nullable=True)
     eye_color: Mapped[str] = mapped_column(String(50), nullable=True)
     films: Mapped[str] = mapped_column(String(350), nullable=True)
-    gender: Mapped[str] = mapped_column(String(100), nullable=True)
+    gender: Mapped[str] = mapped_column(String(200), nullable=True)
     hair_color: Mapped[str] = mapped_column(String(200), nullable=True)
-    height: Mapped[str] = mapped_column(String(3), nullable=True)
+    height: Mapped[str] = mapped_column(String(30), nullable=True)
     homeworld: Mapped[str] = mapped_column(String(200), nullable=True)
     mass: Mapped[str] = mapped_column(String(200), nullable=True)
     name: Mapped[str] = mapped_column(String(200), nullable=True)
     skin_color: Mapped[str] = mapped_column(String(200), nullable=True)
-    species: Mapped[str] = mapped_column(String(100), nullable=True)
-    starships: Mapped[str] = mapped_column(String(100), nullable=True)
-    vehicles: Mapped[str] = mapped_column(String(100), nullable=True)
+    species: Mapped[str] = mapped_column(String(200), nullable=True)
+    starships: Mapped[str] = mapped_column(String(200), nullable=True)
+    vehicles: Mapped[str] = mapped_column(String(200), nullable=True)
     #
 
 
