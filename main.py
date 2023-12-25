@@ -11,14 +11,18 @@ CHUNK_SIZE = 10
 async def fill_hero(hero_list: list):
     people_list = list()
     for person in hero_list:
-        fix = dict()
-        rm_list = ['created', 'edited', 'url']
-        [person.pop(i) for i in rm_list]
-        links_list = ['homeworld', 'films', 'species', 'starships', 'vehicles']
-        coro = [handler_links(person.pop(i)) for i in links_list]
-        result =  await asyncio.gather(*coro)
-        fix = dict(zip(links_list, result))
-        people_list.append(SwapiPeople(**person, **fix))
+        match person:
+            case {'detail': detail}:
+                continue
+            case _:
+                fix = dict()
+                rm_list = ['created', 'edited', 'url']
+                [person.pop(i) for i in rm_list]
+                links_list = ['homeworld', 'films', 'species', 'starships', 'vehicles']
+                coro = [handler_links(person.pop(i)) for i in links_list]
+                result =  await asyncio.gather(*coro)
+                fix = dict(zip(links_list, result))
+                people_list.append(SwapiPeople(**person, **fix))
 
     async with Session() as session:
         session.add_all(people_list)
@@ -61,7 +65,7 @@ async def get_request(hero_id: int):
 async def main():
     await init_db()
 
-    for hero_list in chunked(range(1, 88), CHUNK_SIZE):
+    for hero_list in chunked(range(1, 89), CHUNK_SIZE):
         pre_request = list()
         for i in hero_list:
             coro = get_request(i)
@@ -73,14 +77,5 @@ async def main():
     await asyncio.gather(*tasks)
     await close_db()
 
-
-async def main_2():
-
-    links = ['https://swapi.py4e.com/api/films/1/', 'https://swapi.py4e.com/api/films/2/', 'https://swapi.py4e.com/api/films/3/', 'https://swapi.py4e.com/api/films/6/', 'https://swapi.py4e.com/api/films/7/']
-    res = await handler_links(links)
-    pprint(res)
-
-
 if __name__ == "__main__":
     asyncio.run(main())
-    asyncio.run(main_2())

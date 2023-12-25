@@ -2,5 +2,6 @@
 /.vscode
 /asyncio_78
 /.idea
+/venv
 /.env
 /json.json
