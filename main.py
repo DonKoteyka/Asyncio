@@ -15,12 +15,11 @@ async def fill_hero(hero_list: list):
             case {'detail': detail}:
                 continue
             case _:
-                fix = dict()
                 rm_list = ['created', 'edited', 'url']
                 [person.pop(i) for i in rm_list]
                 links_list = ['homeworld', 'films', 'species', 'starships', 'vehicles']
                 coro = [handler_links(person.pop(i)) for i in links_list]
-                result =  await asyncio.gather(*coro)
+                result = await asyncio.gather(*coro)
                 fix = dict(zip(links_list, result))
                 people_list.append(SwapiPeople(**person, **fix))
 
